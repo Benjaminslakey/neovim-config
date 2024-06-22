@@ -47,6 +47,7 @@ lsp.ensure_installed({
   "eslint",
   "docker_compose_language_service",
   "dockerls",
+  "pkl",
 })
 
 require('luasnip.loaders.from_vscode').lazy_load()
@@ -143,6 +144,20 @@ lsp.set_sign_icons({
   hint = "",
   info = "",
 })
+
+local lspconfig = require("lspconfig")
+lspconfig.gopls.setup({
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+      },
+      staticcheck = true,
+      gofumpt = true,
+    },
+  },
+})
+lspconfig.pkl.setup({})
 
 ---@diagnostic disable-next-line: unused-local
 lsp.on_attach(function(client, bufnr)

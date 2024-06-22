@@ -15,7 +15,6 @@ vim.keymap.set('n', '<leader>ff', function()
       '--glob=*.proto',
       '--glob=*.pkl',
       '--glob=*.yaml',
-      '--glob=*.templ',
       '--glob=*.html',
       '--glob=*.js',
       '--glob=*.css',
