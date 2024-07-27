@@ -3,14 +3,6 @@ require("user.options")
 
 local commonFileTypes = { "*.go", "*.py", "*.lua", "*.js", "*.yaml", "*.yml", "*.json", "*.proto", "*.env", "*.sh" }
 
-
-vim.api.nvim_create_autocmd({ "BufLeave" }, {
-  pattern = commonFileTypes,
-  callback = function()
-    vim.cmd("w")
-  end,
-})
-
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
   callback = function()
@@ -84,6 +76,7 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   pattern = commonFileTypes,
   callback = function()
     vim.lsp.buf.format()
+    vim.lsp.codelens.refresh()
   end,
 })
 

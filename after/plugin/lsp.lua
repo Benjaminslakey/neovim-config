@@ -1,4 +1,5 @@
 local lsp = require('lsp-zero')
+local telescope_builtins = require('telescope.builtin')
 
 local kind_icons = {
   Text = "",
@@ -47,7 +48,6 @@ lsp.ensure_installed({
   "eslint",
   "docker_compose_language_service",
   "dockerls",
-  "pkl",
 })
 
 require('luasnip.loaders.from_vscode').lazy_load()
@@ -157,7 +157,6 @@ lspconfig.gopls.setup({
     },
   },
 })
-lspconfig.pkl.setup({})
 
 ---@diagnostic disable-next-line: unused-local
 lsp.on_attach(function(client, bufnr)
@@ -165,8 +164,8 @@ lsp.on_attach(function(client, bufnr)
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
   vim.keymap.set("n", "gD", function() vim.lsp.buf.declaration() end, opts)
-  vim.keymap.set("n", "gr", function() vim.lsp.buf.references() end, opts)
-  vim.keymap.set("n", "gI", function() vim.lsp.buf.implementation() end, opts)
+  vim.keymap.set("n", "gr", telescope_builtins.lsp_references, opts)
+  vim.keymap.set("n", "gI", telescope_builtins.lsp_implementations, opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
   vim.keymap.set("n", "gl", function() vim.diagnostic.open_float() end, opts)
   vim.keymap.set("n", "<leader>lws", function() vim.lsp.buf.workspace_symbol() end, opts)
