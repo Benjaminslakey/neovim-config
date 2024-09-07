@@ -22,8 +22,8 @@ vim.cmd [[packadd packer.nvim]]
 local packer = require('packer')
 packer.util = require('packer.util')
 packer.init({
- snapshot = "stable",
- snapshot_path = packer.util.join_paths(vim.fn.stdpath('cache'), 'packer.nvim'),
+  snapshot = "stable",
+  snapshot_path = packer.util.join_paths(vim.fn.stdpath('cache'), 'packer.nvim'),
 })
 -- /Users/aaronhunt/.cache/nvim_profiles/lsp-zero/nvim/packer.nvim/stable
 return packer.startup(function(use)
@@ -31,14 +31,14 @@ return packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
   use {
-	  'nvim-telescope/telescope.nvim', tag = '0.1.3',
-	  -- or                            , branch = '0.1.x',
-	  requires = { {'nvim-lua/plenary.nvim'} }
+    'nvim-telescope/telescope.nvim', tag = '0.1.3',
+    -- or                            , branch = '0.1.x',
+    requires = { { 'nvim-lua/plenary.nvim' } }
   }
   use("akinsho/bufferline.nvim") -- Add open buffer tabs
   use({
-	  'rose-pine/neovim',
-	  as = 'rose-pine',
+    'rose-pine/neovim',
+    as = 'rose-pine',
     --  config = function()
     --   vim.cmd('colorscheme rose-pine')
     -- end
@@ -50,42 +50,42 @@ return packer.startup(function(use)
   use({
     'xiantang/darcula-dark.nvim',
     as = 'darcula-dark',
-    requires = {"nvim-treesitter/nvim-treesitter"},
-    config = function ()
+    requires = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
       vim.cmd('colorscheme darcula-dark')
     end
   })
-  use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate'} )
+  use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
   use('nvim-treesitter/nvim-treesitter-context')
   use('theprimeagen/harpoon')
   use('mbbill/undotree')
   use {
-	  'VonHeikemen/lsp-zero.nvim',
-	  branch = 'v1.x',
-	  requires = {
-		  -- LSP Support
-		  {'neovim/nvim-lspconfig'},             -- Required
-		  {'williamboman/mason.nvim'},           -- Optional
-		  {'williamboman/mason-lspconfig.nvim'}, -- Optional
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v1.x',
+    requires = {
+      -- LSP Support
+      { 'neovim/nvim-lspconfig' },         -- Required
+      { 'williamboman/mason.nvim' },       -- Optional
+      { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
-		  -- Autocompletion
-		  {'hrsh7th/nvim-cmp'},         -- Required
-		  {'hrsh7th/cmp-nvim-lsp'},     -- Required
-		  {'hrsh7th/cmp-buffer'},       -- Optional
-		  {'hrsh7th/cmp-path'},         -- Optional
-		  {'saadparwaiz1/cmp_luasnip'}, -- Optional
-		  {'hrsh7th/cmp-nvim-lua'},     -- Optional
+      -- Autocompletion
+      { 'hrsh7th/nvim-cmp' },     -- Required
+      { 'hrsh7th/cmp-nvim-lsp' }, -- Required
+      { 'hrsh7th/cmp-buffer' },   -- Optional
+      { 'hrsh7th/cmp-path' },     -- Optional
+      { 'saadparwaiz1/cmp_luasnip' }, -- Optional
+      { 'hrsh7th/cmp-nvim-lua' }, -- Optional
 
-		  -- Snippets
-		  {'L3MON4D3/LuaSnip'},             -- Required
-		  {'rafamadriz/friendly-snippets'}, -- Optional
-	  }
+      -- Snippets
+      { 'L3MON4D3/LuaSnip' },         -- Required
+      { 'rafamadriz/friendly-snippets' }, -- Optional
+    }
   }
   use('christoomey/vim-tmux-navigator') -- Lets <C-h> and <C-l> nav to tmux
   use("kyazdani42/nvim-web-devicons")
   use("kyazdani42/nvim-tree.lua")
   use("RRethy/vim-illuminate") -- Will soft highlight matches for cursor
-  use{"lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {
+  use { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {
     indent = { char = "▏" },
     scope = {
       buftypes = { "terminal", "nofile" },
@@ -95,17 +95,17 @@ return packer.startup(function(use)
         "NvimTree",
       },
     },
-  }} -- Shows vertical line for blocks/scopes
-  use("moll/vim-bbye") -- Allows bufferline to call Bdelete
-  use("nvim-lualine/lualine.nvim") -- Provide botton line context
-  use("kylechui/nvim-surround") -- Advance tpope surround
+  } }                                      -- Shows vertical line for blocks/scopes
+  use("moll/vim-bbye")                     -- Allows bufferline to call Bdelete
+  use("nvim-lualine/lualine.nvim")         -- Provide botton line context
+  use("kylechui/nvim-surround")            -- Advance tpope surround
   use("lewis6991/gitsigns.nvim")
-  use("numToStr/Comment.nvim") -- Allows auto commenting shortcut
-  use("goolord/alpha-nvim") -- Empty screen prompt
-  use("windwp/nvim-autopairs") -- Autopairs, integrates with both cmp and treesitter
+  use("numToStr/Comment.nvim")             -- Allows auto commenting shortcut
+  use("goolord/alpha-nvim")                -- Empty screen prompt
+  use("windwp/nvim-autopairs")             -- Autopairs, integrates with both cmp and treesitter
   use {
-    "antosha417/nvim-lsp-file-operations", -- Auto updates imports for open buffers when a file is moved 
-    config = function ()
+    "antosha417/nvim-lsp-file-operations", -- Auto updates imports for open buffers when a file is moved
+    config = function()
       require("lsp-file-operations").setup({ debug = true })
     end
   }
@@ -129,17 +129,16 @@ return packer.startup(function(use)
   use("folke/todo-comments.nvim")          -- Shows TODOs
   use("theprimeagen/refactoring.nvim")
   use("https://tpope.io/vim/fugitive.git") -- Git commands
-  }
   use({
-      'MeanderingProgrammer/markdown.nvim',
-      as = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
-      after = { 'nvim-treesitter' },
-      requires = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
-      -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
-      -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
-      config = function()
-          require('render-markdown').setup({})
-      end,
+    'MeanderingProgrammer/markdown.nvim',
+    as = 'render-markdown',                               -- Only needed if you have another plugin named markdown.nvim
+    after = { 'nvim-treesitter' },
+    requires = { 'echasnovski/mini.nvim', opt = true },   -- if you use the mini.nvim suite
+    -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
+    -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
+    config = function()
+      require('render-markdown').setup({})
+    end,
   })
   use({ 'sourcegraph/sg.nvim', run = 'nvim -l build/init.lua' })
 end)
