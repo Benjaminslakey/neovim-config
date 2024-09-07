@@ -40,5 +40,9 @@ vim.opt.fillchars.eob=" "
 vim.opt.shortmess:append "c"
 vim.opt.whichwrap:append("<,>,[,],h,l")
 vim.opt.iskeyword:append("-")
-vim.opt.foldenable = false
 vim.opt.autochdir = false
+
+-- folding stuff
+vim.opt.foldenable = true
+vim.opt.foldlevelstart = 99
+vim.opt.foldmethod = "indent"

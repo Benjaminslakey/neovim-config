@@ -1,5 +1,5 @@
 local lsp = require('lsp-zero')
-local telescope_builtins = require('telescope.builtin')
+local telescope_lsp = require('telescope.builtin')
 
 local kind_icons = {
   Text = "",
@@ -48,6 +48,7 @@ lsp.ensure_installed({
   "eslint",
   "docker_compose_language_service",
   "dockerls",
+  "bufls",
 })
 
 require('luasnip.loaders.from_vscode').lazy_load()
@@ -145,18 +146,31 @@ lsp.set_sign_icons({
   info = "",
 })
 
-local lspconfig = require("lspconfig")
-lspconfig.gopls.setup({
-  settings = {
-    gopls = {
-      analyses = {
-        unusedparams = true,
-      },
-      staticcheck = true,
-      gofumpt = true,
-    },
-  },
-})
+local function filtered_lsp_implementations()
+  local opts = {
+    attach_mappings = function(prompt_bufnr, map)
+      local actions = require "telescope.actions"
+      local action_state = require "telescope.actions.state"
+
+      actions.select_default:replace(function()
+        actions.close(prompt_bufnr)
+        local selection = action_state.get_selected_entry()
+        vim.api.nvim_win_set_cursor(0, { selection.lnum, selection.col })
+      end)
+
+      return true
+    end,
+    file_ignore_patterns = {
+      "%.pb%.go$",        -- Ignore protobuf generated files
+      "/_test%.go$",      -- Ignore test files (assuming they end with _test.go)
+      "/mocks?/",         -- Ignore files in mock or mocks directories
+      "/generated/",      -- Ignore files in generated directories
+      "%.gen%.go$",       -- Ignore generated Go files (if they use this naming convention)
+    }
+  }
+
+  require('telescope.builtin').lsp_implementations(opts)
+end
 
 ---@diagnostic disable-next-line: unused-local
 lsp.on_attach(function(client, bufnr)
@@ -164,8 +178,9 @@ lsp.on_attach(function(client, bufnr)
 
   vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
   vim.keymap.set("n", "gD", function() vim.lsp.buf.declaration() end, opts)
-  vim.keymap.set("n", "gr", telescope_builtins.lsp_references, opts)
-  vim.keymap.set("n", "gI", telescope_builtins.lsp_implementations, opts)
+  vim.keymap.set("n", "gr", telescope_lsp.lsp_references, opts)
+  vim.keymap.set("n", "gI", filtered_lsp_implementations, opts)
+  -- vim.keymap.set("n", "gI", telescope_lsp.lsp_implementations, opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
   vim.keymap.set("n", "gl", function() vim.diagnostic.open_float() end, opts)
   vim.keymap.set("n", "<leader>lws", function() vim.lsp.buf.workspace_symbol() end, opts)
@@ -178,19 +193,6 @@ lsp.on_attach(function(client, bufnr)
 end)
 
 lsp.setup()
-
--- local null_ls = require('null-ls')
--- local null_opts = lsp.build_options('null-ls', {})
---
--- null_ls.setup({
---   on_attach = function(client, bufnr)
---     null_opts.on_attach(client, bufnr)
---   end,
---   sources = {
---     null_ls.builtins.diagnostics.eslint_d,
---     null_ls.builtins.formatting.prettierd,
---   }
--- })
 
 for _, sign in ipairs(signs) do
   vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
@@ -212,3 +214,26 @@ local config = {
 }
 
 vim.diagnostic.config(config)
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = function()
+    local params = vim.lsp.util.make_range_params()
+    params.context = {only = {"source.organizeImports"}}
+    -- buf_request_sync defaults to a 1000ms timeout. Depending on your
+    -- machine and codebase, you may want longer. Add an additional
+    -- argument after params if you find that you have to write the file
+    -- twice for changes to be saved.
+    -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+    for cid, res in pairs(result or {}) do
+      for _, r in pairs(res.result or {}) do
+        if r.edit then
+          local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+          vim.lsp.util.apply_workspace_edit(r.edit, enc)
+        end
+      end
+    end
+    vim.lsp.buf.format({async = false})
+  end
+})

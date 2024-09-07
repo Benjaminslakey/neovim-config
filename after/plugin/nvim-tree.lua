@@ -81,7 +81,7 @@ end
 nvim_tree.setup {
   on_attach = on_attach,
   update_focused_file = {
-    enable = true,
+    enable = false,
     update_cwd = false,
   },
   renderer = {
@@ -123,6 +123,7 @@ nvim_tree.setup {
     },
   },
   view = {
+    adaptive_size = true,
     width = 30,
     side = "left",
     relativenumber = true,

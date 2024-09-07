@@ -18,6 +18,8 @@ return function(opts)
       ["n"] = "*.{vim,lua}",
       ["js"] = "*.js",
       ["json"] = "*.json",
+      ["g"] = "*.go",
+      ["gonly"] = "*.go !**pb* !**test* !**mocks*",
     }
   opts.pattern = opts.pattern or "%s"
 
@@ -37,16 +39,18 @@ return function(opts)
 
       for i = 2, #prompt_split do
         if prompt_split[i] then
-          table.insert(args, "-g")
 
-          local pattern
+          local patterns
           if opts.shortcuts[prompt_split[i]] then
-            pattern = opts.shortcuts[prompt_split[i]]
+            patterns = vim.split(opts.shortcuts[prompt_split[i]], "%s+")
           else
-            pattern = prompt_split[i]
+            patterns = {prompt_split[i]}
           end
 
-          table.insert(args, string.format(opts.pattern, pattern))
+          for _, pattern in ipairs(patterns) do
+            table.insert(args, "-g")
+            table.insert(args, string.format(opts.pattern, pattern))
+          end
         end
       end
 

@@ -3,6 +3,18 @@ require("user.options")
 
 local commonFileTypes = { "*.go", "*.py", "*.lua", "*.js", "*.yaml", "*.yml", "*.json", "*.proto", "*.env", "*.sh" }
 
+vim.api.nvim_create_autocmd("BufDelete", {
+  callback = function(event)
+    local file = event.match
+    local cwd = vim.fn.getcwd()
+    if vim.startswith(file, cwd) and vim.bo[event.buf].modified then
+      -- The file is in the current working directory and has unsaved changes
+      vim.cmd("silent! write")
+      print("Saved changes to: " .. file)
+    end
+  end
+})
+
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
   callback = function()
@@ -14,19 +26,19 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "gitcommit" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-  end,
+	pattern = { "gitcommit"},
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.spell = true
+	end,
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-  end,
+	pattern = { "markdown" },
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.spell = true
+	end,
 })
 
 
@@ -39,46 +51,44 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufRead", "BufNew" }, {
-  pattern = { "*.jbuilder" },
-  callback = function()
-    vim.cmd("set filetype=ruby")
-  end,
-})
-
 vim.api.nvim_create_autocmd({ "VimResized" }, {
-  callback = function()
-    vim.cmd("tabdo wincmd =")
-  end,
+	callback = function()
+		vim.cmd("tabdo wincmd =")
+	end,
 })
 
 vim.api.nvim_create_autocmd({ "CmdWinEnter" }, {
-  callback = function()
-    vim.cmd("quit")
-  end,
+	callback = function()
+		vim.cmd("quit")
+	end,
 })
 
 -- toggle off to enable auto block comment insert for new lines
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
-  callback = function()
-    vim.cmd("set formatoptions-=cro")
-  end,
+	callback = function()
+		vim.cmd("set formatoptions-=cro")
+	end,
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-  callback = function()
-    vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
-  end,
+	callback = function()
+		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+	end,
 })
 
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+	pattern = commonFileTypes,
+	callback = function()
+    vim.lsp.buf.format({ async = true })
+  end,
+})
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-  pattern = commonFileTypes,
   callback = function()
-    vim.lsp.buf.format()
     vim.lsp.codelens.refresh()
-  end,
+    end,
 })
+
 
 -- vim.api.nvim_create_autocmd({ "VimEnter" }, {
 -- 	callback = function()
@@ -93,8 +103,6 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 --[[     vim.cmd [[ ]]
 --[[       nnoremap <silent> <buffer> q :close<CR>  ]]
 --[[       set nobuflisted  ]]
---[[     ]]
---]]
 --[[   end, ]]
 --[[ }) ]]
 --[[]]
@@ -105,8 +113,6 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 --[[     vim.cmd [[ ]]
 --[[       set showtabline=0 | autocmd BufUnload <buffer> set showtabline=2 ]]
 --[[       set laststatus=0 | autocmd BufUnload <buffer> set laststatus=3 ]]
---[[     ]]
---]]
 --[[   end, ]]
 --[[ }) ]]
 --[[]]
