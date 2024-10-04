@@ -26,19 +26,19 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-	pattern = { "gitcommit"},
-	callback = function()
-		vim.opt_local.wrap = true
-		vim.opt_local.spell = true
-	end,
+  pattern = { "gitcommit" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
-	pattern = { "markdown" },
-	callback = function()
-		vim.opt_local.wrap = true
-		vim.opt_local.spell = true
-	end,
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
 })
 
 
@@ -52,42 +52,43 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 })
 
 vim.api.nvim_create_autocmd({ "VimResized" }, {
-	callback = function()
-		vim.cmd("tabdo wincmd =")
-	end,
+  callback = function()
+    vim.cmd("tabdo wincmd =")
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "CmdWinEnter" }, {
-	callback = function()
-		vim.cmd("quit")
-	end,
+  callback = function()
+    vim.cmd("quit")
+  end,
 })
 
 -- toggle off to enable auto block comment insert for new lines
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
-	callback = function()
-		vim.cmd("set formatoptions-=cro")
-	end,
+  callback = function()
+    vim.cmd("set formatoptions-=cro")
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
-	callback = function()
-		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
-	end,
+  callback = function()
+    vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+  end,
 })
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-	pattern = commonFileTypes,
-	callback = function()
-    vim.lsp.buf.format({ async = true })
+  pattern = commonFileTypes,
+  callback = function()
+    vim.lsp.buf.format({ async = false })
   end,
 })
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   callback = function()
     vim.lsp.codelens.refresh()
-    end,
+  end,
 })
+
 
 
 -- vim.api.nvim_create_autocmd({ "VimEnter" }, {

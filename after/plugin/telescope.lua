@@ -30,11 +30,18 @@ vim.keymap.set('n', '<leader>fg', multi_rg, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 vim.keymap.set('n', '<leader>fs', function()
-	builtin.grep_string({ search = vim.fn.input("Grep > ")})
+  builtin.grep_string({ search = vim.fn.input("Grep > ") })
 end)
 vim.keymap.set('n', '<leader>fw', function()
-	builtin.grep_string({ word_match ='-w' })
+  builtin.grep_string({ word_match = '-w' })
 end)
+vim.keymap.set('n', '<leader>fe', builtin.oldfiles, {})
+
+local function log_message(msg)
+  vim.api.nvim_out_write(msg .. "\n")
+end
+
+-- To view messages, use the :messages command in Neovim
 
 local function single_or_multi_select(prompt_bufnr)
   local current_picker = action_state.get_current_picker(prompt_bufnr)
@@ -45,21 +52,33 @@ local function single_or_multi_select(prompt_bufnr)
   if has_multi_selection then
     local results = {}
     action_utils.map_selections(prompt_bufnr, function(selection)
-      table.insert(results, selection[1])
+      local parts = vim.split(selection[1], ":", { maxsplit = 2 })
+      local filepath = parts[1]
+      local line_number = tonumber(parts[2]) or 1 -- Assuming line number is the third part now
+      -- vim.api.nvim_echo(
+      --   { { string.format("filepath selected to open in new buffer: %s\nlinenumber stored: %d", filepath, line_number), "WarningMsg" } },
+      --   true, {}
+      -- )
+      table.insert(results, {
+        filepath = filepath,
+        line = line_number
+      })
     end)
 
-    -- load the selections into buffers list without switching to them
-    for _, filepath in ipairs(results) do
-      -- not the same as vim.fn.bufadd!
+    -- Load the selections into buffers list without switching to them
+    for _, result in ipairs(results) do
+      local filepath = vim.fn.fnameescape(vim.fn.fnamemodify(result.filepath, ":p"))
       vim.cmd.badd({ args = { filepath } })
     end
 
     require("telescope.pickers").on_close_prompt(prompt_bufnr)
 
-    -- switch to newly loaded buffers if on an empty buffer
+    -- Switch to newly loaded buffer if on an empty buffer
     if vim.fn.bufname() == "" and not vim.bo.modified then
       vim.cmd.bwipeout()
-      vim.cmd.buffer(results[1])
+      local first_result = results[1]
+      vim.cmd.buffer(first_result.filepath)
+      vim.api.nvim_win_set_cursor(0, { first_result.line, 0 })
     end
     return
   end

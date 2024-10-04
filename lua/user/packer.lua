@@ -22,14 +22,19 @@ vim.cmd [[packadd packer.nvim]]
 local packer = require('packer')
 packer.util = require('packer.util')
 packer.init({
-  snapshot = "stable",
-  snapshot_path = packer.util.join_paths(vim.fn.stdpath('cache'), 'packer.nvim'),
+  -- snapshot = "stable",
+  -- snapshot_path = packer.util.join_paths(vim.fn.stdpath('cache'), 'packer.nvim'),
 })
--- /Users/aaronhunt/.cache/nvim_profiles/lsp-zero/nvim/packer.nvim/stable
 return packer.startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    commit = "f197a15",
+    run = ':TSUpdate'
+  }
+  use('nvim-treesitter/nvim-treesitter-context')
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.3',
     -- or                            , branch = '0.1.x',
@@ -55,8 +60,6 @@ return packer.startup(function(use)
       vim.cmd('colorscheme darcula-dark')
     end
   })
-  use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
-  use('nvim-treesitter/nvim-treesitter-context')
   use('theprimeagen/harpoon')
   use('mbbill/undotree')
   use {
@@ -64,20 +67,20 @@ return packer.startup(function(use)
     branch = 'v1.x',
     requires = {
       -- LSP Support
-      { 'neovim/nvim-lspconfig' },         -- Required
-      { 'williamboman/mason.nvim' },       -- Optional
+      { 'neovim/nvim-lspconfig' },             -- Required
+      { 'williamboman/mason.nvim' },           -- Optional
       { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
       -- Autocompletion
-      { 'hrsh7th/nvim-cmp' },     -- Required
-      { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-      { 'hrsh7th/cmp-buffer' },   -- Optional
-      { 'hrsh7th/cmp-path' },     -- Optional
+      { 'hrsh7th/nvim-cmp' },         -- Required
+      { 'hrsh7th/cmp-nvim-lsp' },     -- Required
+      { 'hrsh7th/cmp-buffer' },       -- Optional
+      { 'hrsh7th/cmp-path' },         -- Optional
       { 'saadparwaiz1/cmp_luasnip' }, -- Optional
-      { 'hrsh7th/cmp-nvim-lua' }, -- Optional
+      { 'hrsh7th/cmp-nvim-lua' },     -- Optional
 
       -- Snippets
-      { 'L3MON4D3/LuaSnip' },         -- Required
+      { 'L3MON4D3/LuaSnip' },             -- Required
       { 'rafamadriz/friendly-snippets' }, -- Optional
     }
   }
@@ -99,7 +102,6 @@ return packer.startup(function(use)
   use("moll/vim-bbye")                     -- Allows bufferline to call Bdelete
   use("nvim-lualine/lualine.nvim")         -- Provide botton line context
   use("kylechui/nvim-surround")            -- Advance tpope surround
-  use("lewis6991/gitsigns.nvim")
   use("numToStr/Comment.nvim")             -- Allows auto commenting shortcut
   use("goolord/alpha-nvim")                -- Empty screen prompt
   use("windwp/nvim-autopairs")             -- Autopairs, integrates with both cmp and treesitter
@@ -110,8 +112,17 @@ return packer.startup(function(use)
     end
   }
   use { 'https://github.com/apple/pkl-neovim', after = "nvim-treesitter", run = ":TSInstall! pkl" }
+  use("folke/trouble.nvim")                -- Shows errors and warnings
+  use("folke/todo-comments.nvim")          -- Shows TODOs
+  use("theprimeagen/refactoring.nvim")
+  use("https://tpope.io/vim/fugitive.git") -- Git commands
+  use {
+    "lewis6991/gitsigns.nvim",
+    commit = "76927d1"
+  }
   use {
     "folke/which-key.nvim",
+    commit = "4b7167f",
     config = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300
@@ -124,21 +135,18 @@ return packer.startup(function(use)
         },
       }
     end
-  }                                        -- Shows keybindings
-  use("folke/trouble.nvim")                -- Shows errors and warnings
-  use("folke/todo-comments.nvim")          -- Shows TODOs
-  use("theprimeagen/refactoring.nvim")
-  use("https://tpope.io/vim/fugitive.git") -- Git commands
-  use({
-    'MeanderingProgrammer/markdown.nvim',
-    as = 'render-markdown',                               -- Only needed if you have another plugin named markdown.nvim
-    after = { 'nvim-treesitter' },
-    requires = { 'echasnovski/mini.nvim', opt = true },   -- if you use the mini.nvim suite
-    -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
-    -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
-    config = function()
-      require('render-markdown').setup({})
-    end,
-  })
-  use({ 'sourcegraph/sg.nvim', run = 'nvim -l build/init.lua' })
+  } -- Shows keybindings
+  use { "github/copilot.vim" }
+  -- requires some node installs I don't want to do right now
+  -- use({
+  --   'MeanderingProgrammer/markdown.nvim',
+  --   as = 'render-markdown',                               -- Only needed if you have another plugin named markdown.nvim
+  --   after = { 'nvim-treesitter' },
+  --   requires = { 'echasnovski/mini.nvim', opt = true },   -- if you use the mini.nvim suite
+  --   -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
+  --   -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
+  --   config = function()
+  --     require('render-markdown').setup({})
+  --   end,
+  -- })
 end)

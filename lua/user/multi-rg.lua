@@ -12,15 +12,15 @@ return function(opts)
   opts = opts or {}
   opts.cwd = opts.cwd and vim.fn.expand(opts.cwd) or vim.loop.cwd()
   opts.shortcuts = opts.shortcuts
-    or {
-      ["l"] = "*.lua",
-      ["v"] = "*.vim",
-      ["n"] = "*.{vim,lua}",
-      ["js"] = "*.js",
-      ["json"] = "*.json",
-      ["g"] = "*.go",
-      ["gonly"] = "*.go !**pb* !**test* !**mocks*",
-    }
+      or {
+        ["l"] = "*.lua",
+        ["v"] = "*.vim",
+        ["n"] = "*.{vim,lua}",
+        ["js"] = "*.js",
+        ["json"] = "*.json",
+        ["g"] = "*.go",
+        ["gonly"] = "!**pb*  !**test*  !**mocks*  !**generated*",
+      }
   opts.pattern = opts.pattern or "%s"
 
   local custom_grep = finders.new_async_job {
@@ -39,12 +39,11 @@ return function(opts)
 
       for i = 2, #prompt_split do
         if prompt_split[i] then
-
           local patterns
           if opts.shortcuts[prompt_split[i]] then
             patterns = vim.split(opts.shortcuts[prompt_split[i]], "%s+")
           else
-            patterns = {prompt_split[i]}
+            patterns = { prompt_split[i] }
           end
 
           for _, pattern in ipairs(patterns) do
@@ -64,12 +63,12 @@ return function(opts)
   }
 
   pickers
-    .new(opts, {
-      debounce = 100,
-      prompt_title = "Live Grep (with shortcuts)",
-      finder = custom_grep,
-      previewer = conf.grep_previewer(opts),
-      sorter = require("telescope.sorters").empty(),
-    })
-    :find()
+      .new(opts, {
+        debounce = 100,
+        prompt_title = "Live Grep (with shortcuts)",
+        finder = custom_grep,
+        previewer = conf.grep_previewer(opts),
+        sorter = require("telescope.sorters").empty(),
+      })
+      :find()
 end

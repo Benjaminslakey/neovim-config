@@ -40,7 +40,7 @@ lsp.ensure_installed({
   "lua_ls",
   "cssls",
   "html",
-  "tsserver",
+  -- "tsserver",
   "pyright",
   "bashls",
   "jsonls",
@@ -161,11 +161,11 @@ local function filtered_lsp_implementations()
       return true
     end,
     file_ignore_patterns = {
-      "%.pb%.go$",        -- Ignore protobuf generated files
-      "/_test%.go$",      -- Ignore test files (assuming they end with _test.go)
-      "/mocks?/",         -- Ignore files in mock or mocks directories
-      "/generated/",      -- Ignore files in generated directories
-      "%.gen%.go$",       -- Ignore generated Go files (if they use this naming convention)
+      "%.pb%.go$",   -- Ignore protobuf generated files
+      "/_test%.go$", -- Ignore test files (assuming they end with _test.go)
+      "/mocks?/",    -- Ignore files in mock or mocks directories
+      "/generated/", -- Ignore files in generated directories
+      "%.gen%.go$",  -- Ignore generated Go files (if they use this naming convention)
     }
   }
 
@@ -180,7 +180,6 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "gD", function() vim.lsp.buf.declaration() end, opts)
   vim.keymap.set("n", "gr", telescope_lsp.lsp_references, opts)
   vim.keymap.set("n", "gI", filtered_lsp_implementations, opts)
-  -- vim.keymap.set("n", "gI", telescope_lsp.lsp_implementations, opts)
   vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
   vim.keymap.set("n", "gl", function() vim.diagnostic.open_float() end, opts)
   vim.keymap.set("n", "<leader>lws", function() vim.lsp.buf.workspace_symbol() end, opts)
@@ -219,7 +218,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.go",
   callback = function()
     local params = vim.lsp.util.make_range_params()
-    params.context = {only = {"source.organizeImports"}}
+    params.context = { only = { "source.organizeImports" } }
     -- buf_request_sync defaults to a 1000ms timeout. Depending on your
     -- machine and codebase, you may want longer. Add an additional
     -- argument after params if you find that you have to write the file
@@ -234,6 +233,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         end
       end
     end
-    vim.lsp.buf.format({async = false})
+    vim.lsp.buf.format({ async = false })
   end
 })

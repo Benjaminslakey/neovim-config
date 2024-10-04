@@ -65,11 +65,10 @@ vim.keymap.set('i', '<C-a>', 'copilot#Accept("\\<CR>")', {
   replace_keycodes = false
 })
 vim.g.copilot_no_tab_map = true
- 
+
 -- remap next suggestion to control + ]
 vim.keymap.set('i', '<C-]>', '<Plug>(copilot-next)', { noremap = true })
 
- 
 
 --                                                 *copilot-i_CTRL-]*
 -- <C-]>                   Dismiss the current suggestion.
@@ -86,21 +85,6 @@ vim.keymap.set('i', '<C-]>', '<Plug>(copilot-next)', { noremap = true })
 --
 -- <M-C-Right>             Accept the next line of the current suggestion.
 -- <Plug>(copilot-accept-line)
-
-
--- Telescope
--- vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>", opts)
--- vim.keymap.set("n", "<leader>ft", ":Telescope live_grep<CR>", opts)
--- vim.keymap.set("n", "<leader>fp", ":Telescope projects<CR>", opts)
--- vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>", opts)
--- vim.keymap.set("n", "<leader>fg", ":Telescope git_status<CR>", opts)
--- vim.keymap.set('n', '<leader>fw', ":Telescope grep_string<CR>", { word_match ='-w' })
--- vim.keymap.set('n', '<leader>fw', function()
---   require('telescope.builtin').grep_string({ word_match ='-w' })
--- end)
--- vim.keymap.set('n', '<leader>fw', function()
--- 	require('telescope.builtin').grep_string({ search = vim.fn.input("Grep > ") })
--- end)
 
 -- Git
 -- vim.keymap.set("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
